@@ -4,7 +4,6 @@ from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from Api.Config.app import api_app
 from FrontEnd.Config.app import frontend_app
 
-
 def create_app():
     application = Flask(__name__)
     application.wsgi_app = DispatcherMiddleware(
