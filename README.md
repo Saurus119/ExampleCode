@@ -60,14 +60,3 @@ To run the application (it is expected that you have installed Docker and can ru
   From witihn folder where docker files are placed run:
   - `docker exec -it <container_id> /opt/mssql-tools/bin/sqlcmd -S db -U sa -P StrongPassword!123 -d master -i /docker-entrypoint-initdb.d/migration1.sql`
   - run again docker-compose up.
-
-## Run app without docker with local SQLServer
-
-For some reasons my docker at the end stopped working and i wasn´t able to make it work (too many windows errors).
-
-You can run the app within the terminal. It will require you to install localy MSQL Server and rewrite credentionals in DBConnectionLocal. After that:
-   ```bash
-   In your local SQL server create a table called country_detail and add two Columns (ID, Iso, Country) details about 
-   what datatypes columns should be can be see in the migration1.sql file.
-   activate venv
-   run python app.py
