@@ -19,6 +19,9 @@ class CountryView(MethodView):
 
     def _set_country_to_cache(self, iso: str, country: str)-> None:
         """We need to cache"""
+        if isinstance(country, list):
+            country = country[0]
+
         try:
             self.cache.rpush(iso, country)
         except Exception as e:

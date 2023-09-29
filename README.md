@@ -47,6 +47,10 @@ To run the application (it is expected that you have installed Docker and can ru
    ```bash
    docker-compose build
    docker-compose up
+  - Probably you will get an error. Check Troubleshooting + Resolution section of README.
+
+3. Navigate to: [http://127.0.0.1:5000/], create your demo data through the UI form.
+4. Send POST request to [http://127.0.0.1:5000/api/match_country] with proper payload and see the result. Don´t forget to set Content-type of request to application/json otherwise you will get error code 415.
 
 ## Troubleshooting and Data Modification
   If you encounter the following error during the execution of your application:
