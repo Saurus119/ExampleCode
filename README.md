@@ -6,7 +6,6 @@ KiwiTask is a Flask application that utilizes the Flask web framework. It is str
   - **`Api/Config/app.py`:** The API app handles all API calls.
   - **`FrontEnd/Config/app.py`:** The frontend app provides a user interface.
   - **`Shared/`:** Includes all code that is shared between the API and FrontEnd application (Enums, DataAccessLayer, Decorators..)
-  - **`Tests/`:** Implements tests for API and FrontEnd applications 
 
 ## Dispatch Middleware
 
@@ -31,7 +30,7 @@ The frontend app provides a user interface and is accessible at [http://127.0.0.
   Employ JavaScript to enable dynamic manipulation of data on the page without requiring full reloads. The page will only refresh during a search if the user does not provide any ISO code.
 
 ## MVP caching example
-  - Post request through frontend add created country to the cached, it pair country with specific iso.
+  - Post request through frontend add created country to the cache, it pairs country with specific iso.
   - Delete request remove as from DB as well from cache.
   - Get in the frontend is not using cache machanism. Only for API GET cache is used.
 
@@ -57,5 +56,5 @@ To run the application (it is expected that you have installed Docker and can ru
 
 ## Resolution
   From witihn folder where docker files are placed run:
-  - `docker exec -it <container_id> /opt/mssql-tools/bin/sqlcmd -S db -U sa -P StrongPassword!123 -d master -i /docker-entrypoint-initdb.d/migration1.sql`
+  - `docker exec -it <db_container_id> /opt/mssql-tools/bin/sqlcmd -S db -U sa -P StrongPassword!123 -d master -i /docker-entrypoint-initdb.d/migration1.sql`
   - run again docker-compose up.
