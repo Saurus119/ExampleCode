@@ -3,8 +3,6 @@
 KiwiTask is a Flask application that utilizes the Flask web framework. It is structured with two distinct apps: one for handling API calls and another for the frontend. Each app is created as an instance of Flask. In the `app.py` file at the root directory level, we use dispatch middleware to control which requests are processed by the corresponding Flask app.
 
 ## Project Structure
-
-- **Root Folder (`KiwiTask/`):** Root directory of the application.
   - **`Api/Config/app.py`:** The API app handles all API calls.
   - **`FrontEnd/Config/app.py`:** The frontend app provides a user interface.
   - **`Shared/`:** Includes all code that is shared between the API and FrontEnd application (Enums, DataAccessLayer, Decorators..)
@@ -38,7 +36,7 @@ Application is wrapped into the docker containers. Dockerfile and docker-compose
 
 To run the application (it is expected that you have installed Docker and can run Docker commands), follow these steps:
 
-1. Navigate into the root folder called "KiwiTask".
+1. Navigate into the root folder.
 
 2. Build the Docker images:
 
