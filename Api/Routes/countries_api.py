@@ -17,28 +17,6 @@ class CountryAPI(MethodView):
 
     def post(self):
         payload = request.get_json()
-        # iso_value = payload[Country.ISO.value]
-        # payload_countries = payload[CountryAPI.PAYLOAD_COUNTRIES]
-
-        # query = f"""
-        #     SELECT *
-        #     FROM country_detail
-        #     WHERE iso = ? AND country IN ({', '.join(['?'] * len(payload_countries))})
-        # """
-        # params = [iso_value] + payload_countries
-        # cursor.execute(query, params)
-        # rows = cursor.fetchall()
-
-        # response = {
-        #     Country.ISO.value: iso_value,
-        #     self.RESPONSE_COUNT: 0,
-        #     self.RESPONSE_MATCH: []
-        # }
-
-        # for row in rows:
-        #     response[self.RESPONSE_COUNT] += 1
-        #     response[self.RESPONSE_MATCH].append(row[1].strip())
-
         filtered_countries = (
             session.query(CountryDetail)
             .filter(
