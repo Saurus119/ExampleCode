@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Country Table</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
     <!-- Add Bootstrap CDN link -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
-<body>
+<body class="m-5">
     <!-- New country -->
     <div class="mb-3 mt-3 d-flex justify-content-center">
         <div class="col-md-6 mx-auto">
@@ -21,37 +21,43 @@
         </div>
     </div>
     <hr>
-    <!-- Search -->
-    <div class="mb-3 mt-3 d-flex justify-content-center align-items-center">
-        <div class="input-group col-md-6">
-            <label for="isoSearch" class="form-label me-2">Iso search:</label>
-            <input type="text" class="form-control" id="isoSearch">
+    <div class="mb-3 mt-3 d-flex justify-content-center">
+        <div class="col-md-6 mx-auto">
+            <label for="isoSearch" class="form-label me-2">ISO search:</label>
+            <input type="text" class="form-control mb-2" id="isoSearch">
+            <button class="btn btn-primary" onclick="getFilteredCountry()">Search</button>
         </div>
-        <button class="btn btn-primary" onclick="getFilteredCountry()">Search</button>
     </div>
     <hr>
 
-    <h2 class="align-items-center">Country Table</h2>
-    <table class="table table-striped">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">ISO</th>
-            <th scope="col">Country</th>
-            <th scope="col">Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for country in available_countries %}
-            <tr class="country-row" id="row_{{ country['country'] }}_{{country['iso']}}">
-                <td>{{ country['iso'] }}</td>
-                <td>{{ country['country'] }}</td>
-                <td>
-                    <button class="btn btn-danger" onclick="deleteCountryData('{{ country['iso'] }}', '{{ country['country'] }}')">Delete</button>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="container text-center">
+        <h2 class="justify-content-center">Country Table</h2>
+    </div>
+    <div class="mb-3 mt-3 d-flex justify-content-center">
+        <div class="col-md-6 mx-auto">
+            <table class="table table-striped" style="width: 100%;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ISO</th>
+                        <th scope="col">Country</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for country in available_countries %}
+                        <tr class="country-row" id="row_{{ country['country'] }}_{{country['iso']}}">
+                            <td>{{ country['iso'] }}</td>
+                            <td>{{ country['country'] }}</td>
+                            <td>
+                                <button class="btn btn-danger" onclick="deleteCountryData('{{ country['iso'] }}', '{{ country['country'] }}')">Delete</button>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- </div> -->
 
 <script>
      deleteCountryData = (iso, country) => {
