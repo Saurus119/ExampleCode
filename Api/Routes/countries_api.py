@@ -17,6 +17,10 @@ class CountryAPI(MethodView):
 
     def post(self):
         payload = request.get_json()
+
+        if cached_countries := self.cache.get(payload[Country.ISO.value]):
+            return jsonify(cached_countries)
+
         filtered_countries = (
             session.query(CountryDetail)
             .filter(
@@ -35,9 +39,6 @@ class CountryAPI(MethodView):
         for country in filtered_countries:
             response[self.RESPONSE_COUNT] += 1
             response[self.RESPONSE_MATCH].append(country.country)
-
-        if cached_val := self.cache.get("mykey"):
-            response["cached"] = cached_val
 
         return jsonify(response)
     

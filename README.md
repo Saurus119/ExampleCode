@@ -30,6 +30,12 @@ The frontend app provides a user interface and is accessible at [http://127.0.0.
 - **Dynamic Page Manipulation with JavaScript:**
   Employ JavaScript to enable dynamic manipulation of data on the page without requiring full reloads. The page will only refresh during a search if the user does not provide any ISO code.
 
+## MVP caching example
+- If you connect to the REDIS through CLI: `docker exec -it redis-cache redis-cli` and you set for the iso "de" value "<your_value>" it will automatically return cached value 
+  instead of processing request further and wait for DB query.
+- It is not optimalized, it demostrate mostly MVP how I would create a Caching mechanism (structure the code).
+  If cache is hitted at this moment it returns only value that is in the cache,
+
 ## Getting Started
 
 Application is wrapped into the docker containers. Dockerfile and docker-compose file are placed at the root directory of the project.
