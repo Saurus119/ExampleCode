@@ -6,10 +6,12 @@ from redis import Redis
 from Shared.Cache.i_cache import IRedis
 
 class RedisCache(IRedis):
-    """Represent class that modifies data in the redis cache."""
+    """Example class how we can implement own methods if we want to for caching based on INTERFACE.
+       Demonstrate knowledge of the Interface/ABC in the python. For MVP classic Redis lib is used.
+    """
 
     def __init__(self):
-        self.client = Redis(host="redis", port=6379)
+        self.client = Redis(host="redis", port=6379) 
 
     def get(self, key: str) -> Union[str, list, dict, int]:
         if data := self.client.get(key):

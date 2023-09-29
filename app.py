@@ -14,4 +14,7 @@ def create_app():
 
 if __name__ == "__main__":
     application = create_app()
-    application.run(host='0.0.0.0', debug=True)
+    # local RUN
+    # application.run(host='127.0.0.1', debug=True) 
+    # DOCKER run
+    application.run(host='0.0.0.0', debug=True)   

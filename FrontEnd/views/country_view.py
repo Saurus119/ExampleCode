@@ -17,8 +17,19 @@ class CountryView(MethodView):
     def __init__(self) -> None:
         self.cache = redis_cache
 
+    def _set_country_to_cache(self, iso: str, country: str)-> None:
+        """We need to cache"""
+        try:
+            self.cache.rpush(iso, country)
+        except Exception as e:
+            print(str(e))
+
+    def _delete_country_from_cache(self, iso, country) -> None:
+        self.cache.lrem(iso.strip(), 0, country.strip())
+
     def get(self):
         """Get either all countries or country which contains searched iso."""
+        # this endpoint for frontend doesnt include caching so you can verify API response through UI search.
         iso = request.args.get(Country.ISO.value)
 
         if iso is not None: # user added "iso" search to the request
@@ -46,6 +57,9 @@ class CountryView(MethodView):
         )
         session.commit()
 
+        if is_deleted: 
+            self._delete_country_from_cache(payload[Country.ISO.value], payload[Country.COUNTRY.value])
+
         return jsonify(success=is_deleted)
     
     def post(self):
@@ -63,8 +77,10 @@ class CountryView(MethodView):
                 session.add(new_country)
                 session.commit()
                 
+                self._set_country_to_cache(payload[Country.ISO.value], payload[Country.COUNTRY.value])
                 return jsonify(success=True)
 
             return jsonify(success=False)
         except Exception as e:
+            print(str(e))
             return jsonify(success=False)

@@ -1,3 +1,5 @@
+import json
+
 from flask import jsonify, request
 from flask.views import MethodView
 
@@ -18,8 +20,22 @@ class CountryAPI(MethodView):
     def post(self):
         payload = request.get_json()
 
-        if cached_countries := self.cache.get(payload[Country.ISO.value]):
-            return jsonify(cached_countries)
+        response = {
+            Country.ISO.value: payload[Country.ISO.value],
+            self.RESPONSE_COUNT: 0,
+            self.RESPONSE_MATCH: []
+        }
+
+        # caching
+        if cached_countries := self.cache.lrange(payload[Country.ISO.value], 0, -1):
+            cached_countries = [country.decode("utf-8") if (isinstance(country, bytes)) else country for country in cached_countries]
+            for cached_country in cached_countries:
+                response[self.RESPONSE_COUNT] += 1
+                # return only those countries from cache that was used in the request payload.
+                if cached_country in payload[self.PAYLOAD_COUNTRIES]:
+                    response[self.RESPONSE_MATCH].append(cached_country)
+                
+            return jsonify(response)
 
         filtered_countries = (
             session.query(CountryDetail)
@@ -30,16 +46,11 @@ class CountryAPI(MethodView):
             .all()
             )
 
-        response = {
-            Country.ISO.value: payload[Country.ISO.value],
-            self.RESPONSE_COUNT: 0,
-            self.RESPONSE_MATCH: []
-        }
-
         for country in filtered_countries:
             response[self.RESPONSE_COUNT] += 1
             response[self.RESPONSE_MATCH].append(country.country)
 
-        return jsonify(response)
-    
+        if len(response[self.RESPONSE_MATCH]):
+            self.cache.rpush(payload[Country.ISO.value],  json.dumps(response[self.RESPONSE_MATCH]))     
 
+        return jsonify(response)
