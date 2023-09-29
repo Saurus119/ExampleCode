@@ -43,7 +43,18 @@ To run the application (it is expected that you have installed Docker and can ru
    ```bash
    docker-compose build
    docker-compose up
-   connect to the docker DB container and execute migration1.sql
+
+## Troubleshooting and Data Modification
+  If you encounter the following error during the execution of your application:
+  
+  `web | sqlalchemy.exc.ProgrammingError: (pyodbc.ProgrammingError) ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'country_detail'. (208) (SQLExecDirectW)")
+  web | [SQL: SELECT country_detail.id AS country_detail_id, country_detail.iso AS country_detail_iso, country_detail.country AS country_detail_country`
+
+## Resolution
+  From witihn folder where docker files are placed run:
+  - `docker exec -it <container_id> /opt/mssql-tools/bin/sqlcmd -S db -U sa -P StrongPassword!123 -d master -i /docker-entrypoint-initdb.d/migration1.sql`
+
+## Run app without docker with local SQLServer
 
 For some reasons my docker at the end stopped working and i wasn´t able to make it work (too many windows errors).
 

@@ -12,12 +12,13 @@ class RedisCache(IRedis):
         self.client = Redis(host="redis", port=6379)
 
     def get(self, key: str) -> Union[str, list, dict, int]:
-        data = self.client.get(key).decode("utf-8")
+        if data := self.client.get(key):
+            data = data.decode("utf-8")
 
         try:
             return json.loads(data)
-        except Exception as e:
-            return str(e)
+        except Exception:
+            return data
 
     def update_or_create(self, key: str, value: Union[str, list, dict, int]) -> None:
         self.client.set(key, value)

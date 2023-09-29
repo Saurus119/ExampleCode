@@ -36,8 +36,8 @@ class CountryAPI(MethodView):
             response[self.RESPONSE_COUNT] += 1
             response[self.RESPONSE_MATCH].append(country.country)
 
-        # if cached_val := self.cache.get("mykey"):
-        #     response["cached"] = cached_val
+        if cached_val := self.cache.get("mykey"):
+            response["cached"] = cached_val
 
         return jsonify(response)
     

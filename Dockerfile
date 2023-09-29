@@ -5,13 +5,6 @@ RUN apt-get update && \
     apt-get install -y curl gnupg lsb-release && \
     rm -rf /var/lib/apt/lists/*
 
-# Check Ubuntu version
-RUN VERSION=$(lsb_release -rs) && \
-    if [ ! "18.04 20.04 22.04 23.04" == *"$VERSION"* ]; then \
-        echo "Ubuntu $VERSION is not currently supported."; \
-        exit 1; \
-    fi
-
 # Install ODBC driver dependencies
 RUN apt-get update && \
     apt-get install -y gnupg && \
