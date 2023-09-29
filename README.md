@@ -57,4 +57,4 @@ To run the application (it is expected that you have installed Docker and can ru
 ## Resolution
   From witihn folder where docker files are placed run:
   - `docker exec -it <db_container_id> /opt/mssql-tools/bin/sqlcmd -S db -U sa -P StrongPassword!123 -d master -i /docker-entrypoint-initdb.d/migration1.sql`
-  - run again docker-compose up.
+  - try to send request again and if it will not work run again docker-compose up.

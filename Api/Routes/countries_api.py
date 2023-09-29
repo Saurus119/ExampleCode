@@ -30,9 +30,9 @@ class CountryAPI(MethodView):
         if cached_countries := self.cache.lrange(payload[Country.ISO.value], 0, -1):
             cached_countries = [country.decode("utf-8") if (isinstance(country, bytes)) else country for country in cached_countries]
             for cached_country in cached_countries:
-                response[self.RESPONSE_COUNT] += 1
                 # return only those countries from cache that was used in the request payload.
                 if cached_country in payload[self.PAYLOAD_COUNTRIES]:
+                    response[self.RESPONSE_COUNT] += 1
                     response[self.RESPONSE_MATCH].append(cached_country)
                 
             return jsonify(response)
