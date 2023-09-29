@@ -1,0 +1,37 @@
+version: '3'
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      SA_PASSWORD: "StrongPassword!123"
+      ACCEPT_EULA: "Y"
+      DOCKER_ENV: "true"
+    ports:
+      - "1433:1433"
+    networks:
+      - mynetwork
+    container_name: "db"
+    volumes:
+      - ./migration1.sql:/docker-entrypoint-initdb.d/migration1.sql
+
+  redis: 
+      image: redislabs/redismod
+      ports:
+        - '6379:6379'
+      networks:
+        - mynetwork
+      container_name: "redis-cache"
+
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+      # - redis
+    networks:
+      - mynetwork
+    container_name: "web"
+
+networks:
+  mynetwork:

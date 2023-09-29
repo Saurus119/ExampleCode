@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Table</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/table.css') }}">
+    <!-- Add Bootstrap CDN link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <!-- New country -->
+    <div class="mb-3 mt-3 d-flex justify-content-center">
+        <div class="col-md-6 mx-auto">
+            <label for="newIso" class="form-label">ISO:</label>
+            <input type="text" class="form-control mb-2" id="newIso">
+            <label for="newCountry" class="form-label">Country:</label>
+            <input type="text" class="form-control mb-2" id="newCountry">
+            <button class="btn btn-success" onclick="addCountry()">Add</button>
+        </div>
+    </div>
+    <hr>
+    <!-- Search -->
+    <div class="mb-3 mt-3 d-flex justify-content-center align-items-center">
+        <div class="input-group col-md-6">
+            <label for="isoSearch" class="form-label me-2">Iso search:</label>
+            <input type="text" class="form-control" id="isoSearch">
+        </div>
+        <button class="btn btn-primary" onclick="getFilteredCountry()">Search</button>
+    </div>
+    <hr>
+
+    <h2 class="align-items-center">Country Table</h2>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">ISO</th>
+            <th scope="col">Country</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for country in available_countries %}
+            <tr class="country-row" id="row_{{ country['country'] }}_{{country['iso']}}">
+                <td>{{ country['iso'] }}</td>
+                <td>{{ country['country'] }}</td>
+                <td>
+                    <button class="btn btn-danger" onclick="deleteCountryData('{{ country['iso'] }}', '{{ country['country'] }}')">Delete</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+<script>
+     deleteCountryData = (iso, country) => {
+        var endpoint = '{{ url_for("all_countries", iso=iso, country=country) }}';
+
+        fetch(endpoint, { // do delete request
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ iso: iso, country: country }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                var rowId = 'row_' + country + '_' + iso;
+                var row = document.getElementById(rowId);
+                
+                if (row) {
+                    row.remove();
+                }
+            } else {
+                alert(data.message)
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+
+     getFilteredCountry = () => {
+        var isoSearchValue = document.getElementById("isoSearch").value;
+
+        var endpoint = '{{ url_for("all_countries") }}'
+        var query = "";
+
+        if (isoSearchValue) {
+            query += "?iso=" + encodeURIComponent(isoSearchValue);
+        }
+
+        console.log(isoSearchValue)
+        if (isoSearchValue) {
+            fetch(endpoint + query, { 
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                var newData = data.filtered_countries/* Your filtered data received from the server */
+
+                // Remove existing rows from the table
+                var tableBody = document.querySelector('tbody');
+                tableBody.innerHTML = '';
+
+                // Append new rows based on the filtered data
+                newData.forEach(country => {
+                    var row = document.createElement('tr');
+                    row.className = 'country-row';
+                    row.id = 'row_' + country['country'] + '_' + country['iso'];
+
+                    var cellIso = document.createElement('td');
+                    cellIso.textContent = country['iso'];
+                    row.appendChild(cellIso);
+
+                    var cellCountry = document.createElement('td');
+                    cellCountry.textContent = country['country'];
+                    row.appendChild(cellCountry);
+
+                    var cellAction = document.createElement('td');
+                    var deleteButton = document.createElement('button');
+                    deleteButton.className = 'btn btn-danger';
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.onclick = function () {
+                        deleteCountryData(country['iso'], country['country']);
+                    };
+                    cellAction.appendChild(deleteButton);
+                    row.appendChild(cellAction);
+
+                    tableBody.appendChild(row);
+                });
+            } else {
+                alert("Country couldnt be deleted")
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+        } else {
+            location.reload();
+        }
+    }
+
+addCountry = () => {
+    var newIso = document.getElementById("newIso").value;
+    var newCountryName = document.getElementById("newCountry").value;
+    var endpoint = '{{ url_for("all_countries") }}';
+
+    if (!newIso || !newCountryName) {
+        alert("Iso and country name must be filled in.");
+        return;
+    }
+
+    fetch(endpoint, { 
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ iso: newIso, country: newCountryName }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if(data.success) {
+            var tableBody = document.querySelector('tbody');
+
+            // Create a new row
+            var row = document.createElement('tr');
+            row.className = 'country-row';
+            row.id = 'row_' + newCountryName + '_' + newIso;
+
+            // Create cells for the new row
+            var cellIso = document.createElement('td');
+            cellIso.textContent = newIso;
+            row.appendChild(cellIso);
+
+            var cellCountry = document.createElement('td');
+            cellCountry.textContent = newCountryName;
+            row.appendChild(cellCountry);
+
+            var cellAction = document.createElement('td');
+            var deleteButton = document.createElement('button');
+            deleteButton.className = 'btn btn-danger';
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = function () {
+                deleteCountryData(newIso, newCountryName);
+            };
+            cellAction.appendChild(deleteButton);
+            row.appendChild(cellAction);
+
+            // Append the new row to the table
+            tableBody.appendChild(row);
+
+            //clear inputs.
+            document.getElementById("newIso").value = "";
+            document.getElementById("newCountry").value = "";
+        } else {
+            if(data.message) {
+                alert(data.message)
+            } else {
+                alert("This record already exists.")
+            }
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

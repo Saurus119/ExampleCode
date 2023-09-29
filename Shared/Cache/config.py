@@ -1,0 +1,26 @@
+import json
+
+from typing import Union
+from redis import Redis
+
+from Shared.Cache.i_cache import IRedis
+
+class RedisCache(IRedis):
+    """Represent class that modifies data in the redis cache."""
+
+    def __init__(self):
+        self.client = Redis(host="redis", port=6379)
+
+    def get(self, key: str) -> Union[str, list, dict, int]:
+        data = self.client.get(key).decode("utf-8")
+
+        try:
+            return json.loads(data)
+        except Exception as e:
+            return str(e)
+
+    def update_or_create(self, key: str, value: Union[str, list, dict, int]) -> None:
+        self.client.set(key, value)
+
+    def delete(self, key: str) -> None:
+        self.client.delete(key)

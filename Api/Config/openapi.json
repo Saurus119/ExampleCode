@@ -1,0 +1,36 @@
+info:
+  title: Kiwi test API task
+  version: 1.0.0
+paths:
+  /match_country:
+    post:
+      summary: Return documents that match criteria of body request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              iso: "svk"
+              countries: ["Slowakei", "Slovak", "Czech Republic"]
+      responses:
+        '200':
+          description: Successful response example.
+          content:
+            application/json:
+              example:
+                iso: "svk",
+                match_count: 2,
+                matches: [
+                    "Slovak",
+                    "Slowakei"
+                ]
+        '400':
+          description: Invalid POST payload.
+          content:
+            application/json:
+              example:
+                message: Invalid POST payload. You must include the following keys ["iso", "countries"] in the request body:
+                - iso: string
+                - countries: array of strings
+        '415':
+          description: The absence of the 'Content-Type' header set to 'application/json' has been identified in the request. It's noteworthy that content-type validation is not performed for GET requests, whereas all other request types undergo this verification process.
