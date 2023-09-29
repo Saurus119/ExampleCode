@@ -6,8 +6,8 @@ from Shared.RequestHooks.before_request_check import before_request_handler
 app = Flask(__name__)
 
 api_app = register_api_routes(app)
-# api_app.before_request(before_request_handler)
+api_app.before_request(before_request_handler)
 
-@api_app.route("/openapi.json")
-def openapi():
-    return send_file("openapi.json")
+# @api_app.route("/openapi.json")
+# def openapi():
+#     return send_file("openapi.json")

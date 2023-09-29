@@ -13,8 +13,6 @@ services:
     container_name: "db"
     volumes:
       - ./migration1.sql:/docker-entrypoint-initdb.d/migration1.sql
-      # - ./migration1.sql:/docker-entrypoint-initdb.d/migration1.sql
-    # command: ["bash", "-c", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P StrongPassword!123 -d master -i /docker-entrypoint-initdb.d/migration1.sql"]
 
   redis: 
       image: redislabs/redismod
